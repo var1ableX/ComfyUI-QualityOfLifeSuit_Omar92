@@ -149,12 +149,17 @@ def get_openAI_models():
         return openAI_models
 
     install_openai()
-    import openai
+    from openai import OpenAI
+    
+    client = OpenAI(api_key=get_api_key(),
+    api_key=api_key,
+    api_key=api_key,
+    api_key=api_key)
     # Set the API key for the OpenAI module
-    openai.api_key = get_api_key()
+    
 
     try:
-        models = openai.Model.list()  # Get the list of models
+        models = client.models.list()  # Get the list of models
     except:
         print("Error: OpenAI API key is invalid OpenAI features wont work for you")
         return []
@@ -207,12 +212,17 @@ class O_ChatGPT_O:
 
     def fun(self,  model, prompt,behaviour, seed):
         install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
+        from openai import OpenAI
+        
+        client = OpenAI(api_key=get_api_key(),
+        api_key=api_key,
+        api_key=api_key,
+        api_key=api_key)  # Import the OpenAI module
 
         # Get the API key from the file
         api_key = get_api_key()
 
-        openai.api_key = api_key  # Set the API key for the OpenAI module
+          # Set the API key for the OpenAI module
         initMessage = "";
         if(behaviour == "description"):
             initMessage = get_init_message(False);
@@ -220,21 +230,17 @@ class O_ChatGPT_O:
             initMessage = get_init_message(True);
         # Create a chat completion using the OpenAI module
         try:
-            completion = openai.ChatCompletion.create(
-                model=model,
-                messages=[
-                    {"role": "user", "content":initMessage},
-                    {"role": "user", "content": prompt}
-                ]
-            )
+            completion = client.chat.completions.create(model=model,
+            messages=[
+                {"role": "user", "content":initMessage},
+                {"role": "user", "content": prompt}
+            ])
         except:  # sometimes it fails first time to connect to server
-            completion = openai.ChatCompletion.create(
-                model=model,
-                messages=[
-                    {"role": "user", "content": initMessage},
-                    {"role": "user", "content": prompt}
-                ]
-            )
+            completion = client.chat.completions.create(model=model,
+            messages=[
+                {"role": "user", "content": initMessage},
+                {"role": "user", "content": prompt}
+            ])
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
         return (answer,)  # Return the answer as a string
@@ -265,30 +271,31 @@ class O_ChatGPT_medium_O:
 
     def fun(self,  model, prompt, initMsg, seed):
         install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
+        from openai import OpenAI
+        
+        client = OpenAI(api_key=get_api_key(),
+        api_key=api_key,
+        api_key=api_key,
+        api_key=api_key)  # Import the OpenAI module
 
         # Get the API key from the file
         api_key = get_api_key()
 
-        openai.api_key = api_key  # Set the API key for the OpenAI module
+          # Set the API key for the OpenAI module
 
         # Create a chat completion using the OpenAI module
         try:
-            completion = openai.ChatCompletion.create(
-                model=model,
-                messages=[
-                    {"role": "user", "content": initMsg},
-                    {"role": "user", "content": prompt}
-                ]
-            )
+            completion = client.chat.completions.create(model=model,
+            messages=[
+                {"role": "user", "content": initMsg},
+                {"role": "user", "content": prompt}
+            ])
         except:  # sometimes it fails first time to connect to server
-            completion = openai.ChatCompletion.create(
-                model=model,
-                messages=[
-                    {"role": "user", "content": initMsg},
-                    {"role": "user", "content": prompt}
-                ]
-            )
+            completion = client.chat.completions.create(model=model,
+            messages=[
+                {"role": "user", "content": initMsg},
+                {"role": "user", "content": prompt}
+            ])
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
         return (answer,)  # Return the answer as a string
@@ -314,11 +321,16 @@ class load_openAI_O:
 
     def fun(self):
         install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
+        from openai import OpenAI
+        
+        client = OpenAI(api_key=get_api_key(),
+        api_key=api_key,
+        api_key=api_key,
+        api_key=api_key)  # Import the OpenAI module
 
         # Get the API key from the file
         api_key = get_api_key()
-        openai.api_key = api_key  # Set the API key for the OpenAI module
+          # Set the API key for the OpenAI module
 
         return (
             {
@@ -414,15 +426,11 @@ class openAi_chat_completion_O:
         # Create a chat completion using the OpenAI module
         openai = openai["openai"]
         try:
-            completion = openai.ChatCompletion.create(
-                model=model,
-                messages=messages["messages"]
-            )
+            completion = client.chat.completions.create(model=model,
+            messages=messages["messages"])
         except:  # sometimes it fails first time to connect to server
-            completion = openai.ChatCompletion.create(
-                model=model,
-                messages=messages["messages"]
-            )
+            completion = client.chat.completions.create(model=model,
+            messages=messages["messages"])
         # Get the answer from the chat completion
         content = completion["choices"][0]["message"]["content"]
         return (
@@ -514,11 +522,9 @@ class openAi_Image_create_O:
 
         imageURL = ""
         try:
-            imagesURLS = openai.Image.create(
-                prompt=prompt,
-                n=number,
-                size=size
-            )
+            imagesURLS = client.images.generate(prompt=prompt,
+            n=number,
+            size=size)
             imageURL = imagesURLS["data"][0]["url"]
         except Exception as e:
             print(f'{PACKAGE_NAME}:openAi_Image_create_O:', e)
@@ -594,13 +600,11 @@ class openAi_Image_Edit_O:
 
         imageURL = ""
         try:
-            imagesURLS = openai.Image.create_edit(
-                image=binary_image,
-                mask=binary_mask,
-                prompt=prompt,
-                n=number,
-                size=size
-            )
+            imagesURLS = client.images.generate(image=binary_image,
+            mask=binary_mask,
+            prompt=prompt,
+            n=number,
+            size=size)
             imageURL = imagesURLS["data"][0]["url"]
         except Exception as e:
             print(f'{PACKAGE_NAME}:openAi_Image_create_O:', e)
@@ -662,11 +666,9 @@ class openAi_Image_variation_O:
 
         imageURL = " "
         try:
-            imagesURLS = openai.Image.create_variation(
-                image=binary_image,
-                n=number,
-                size=size
-            )
+            imagesURLS = client.images.generate(image=binary_image,
+            n=number,
+            size=size)
             imageURL = imagesURLS["data"][0]["url"]
         except Exception as e:
             print(f'{PACKAGE_NAME}:openAi_Image_create_O:', e)

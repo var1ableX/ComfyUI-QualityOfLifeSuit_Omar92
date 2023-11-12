@@ -48,21 +48,22 @@ class O_ChatGPT_deprecated:
 
     def fun(self, api_key_file, prompt):
         self.install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
+        from openai import OpenAI
+        
+        client = OpenAI(api_key=api_key,
+        api_key=api_key)  # Import the OpenAI module
 
         # Get the API key from the file
         api_key = self.get_api_key(api_key_file)
 
-        openai.api_key = api_key  # Set the API key for the OpenAI module
+          # Set the API key for the OpenAI module
 
         # Create a chat completion using the OpenAI module
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"},
-                {"role": "user", "content": prompt}
-            ]
-        )
+        completion = client.chat.completions.create(model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"},
+            {"role": "user", "content": prompt}
+        ])
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
 
@@ -106,11 +107,14 @@ class O_ChatGPT_deprecated:
 
     def fun(self, api_key_file):
         self.install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
+        from openai import OpenAI
+        
+        client = OpenAI(api_key=api_key,
+        api_key=api_key)  # Import the OpenAI module
 
         # Get the API key from the file
         api_key = self.get_api_key(api_key_file)
-        openai.api_key = api_key  # Set the API key for the OpenAI module
+          # Set the API key for the OpenAI module
 
         return (
             {
@@ -218,11 +222,9 @@ class openAi_Image_create_deprecated:
         openai = openai["openai"]
         prompt = prompt["string"]
         number = 1
-        imagesURLS = openai.Image.create(
-            prompt=prompt,
-            n=number,
-            size=size
-        )
+        imagesURLS = client.images.generate(prompt=prompt,
+        n=number,
+        size=size)
         imageURL = imagesURLS["data"][0]["url"]
         print("imageURL:", imageURL)
         image = requests.get(imageURL).content
@@ -264,10 +266,8 @@ class openAi_chat_completion_deprecated:
     def fun(self, openai, model, messages):
         # Create a chat completion using the OpenAI module
         openai = openai["openai"]
-        completion = openai.ChatCompletion.create(
-            model=model,
-            messages=messages["messages"]
-        )
+        completion = client.chat.completions.create(model=model,
+        messages=messages["messages"])
         # Get the answer from the chat completion
         content = completion["choices"][0]["message"]["content"]
         return (
